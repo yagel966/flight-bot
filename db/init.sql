@@ -1,0 +1,34 @@
+CREATE TABLE IF NOT EXISTS users (
+	id SERIAL PRIMARY KEY,
+	telegram_id BIGINT UNIQUE NOT NULL,
+	email TEXT,
+	created_at TIMESTAMP DEFAULT NOW()
+); 
+
+
+CREATE TABLE IF NOT EXISTS routes (
+	id SERIAL PRIMARY KEY,
+	user_id INTEGER REFERENCES users(id),
+	origin TEXT NOT NULL,
+	destination TEXT NOT NULL,
+	target_price INTEGER,
+	is_active BOOLEAN DEFAULT TRUE,
+	created_at TIMESTAMP DEFAULT NOW()
+);
+
+
+CREATE TABLE IF NOT EXISTS prices (
+	id SERIAL PRIMARY KEY,
+	route_id INTEGER REFERENCES routes(id),
+	price INTEGER NOT NULL,
+	currency TEXT DEFAULT 'ILS',
+	fetched_at TIMESTAMP DEFAULT NOW()
+);
+
+
+CREATE TABLE IF NOT EXISTS alerts_sent (
+	id SERIAL PRIMARY KEY,
+	route_id INTEGER REFERENCES routes(id),
+	price INTEGER NOT NULL,
+	sent_at TIMESTAMP DEFAULT NOW()
+);
