@@ -1,0 +1,37 @@
+version: '3.8'
+
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: flight_bot
+      POSTGRES_USER: flightbot
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+
+  scraper:
+    build: .
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+    env_file:
+      - .env
+    volumes:
+      - ./logs:/app/logs
+
+  jenkins:
+    image: jenkins/jenkins:lts
+    ports:
+      - "8080:8080"
+    volumes:
+      - jenkins_data:/var/jenkins_home
+
+volumes:
+  postgres_data:
+  jenkins_data:
