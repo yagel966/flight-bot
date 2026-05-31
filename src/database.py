@@ -14,8 +14,8 @@ def save_price(route_id, price):
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(
-            "INSERT INTO prices (route_id, price) VALUES (%s, %s)",
-            (route_id, price)
+            "INSERT INTO prices (route_id, price, currency) VALUES (%s, %s, %s)",
+            (route_id, price, "USD")
     )
     conn.commit()
     cursor.close()
