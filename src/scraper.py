@@ -2,6 +2,7 @@ import requests
 from config import TRAVELPAYOUTS_TOKEN
 from database import get_active_routes, save_price, get_last_price, save_alert
 from notifier import send_alert 
+import time
 
 
 def get_price(origin, destination):
@@ -24,6 +25,7 @@ def get_price(origin, destination):
 
 
 def run():
+    time.sleep(5)
     routes = get_active_routes()
 
     for route in routes:
@@ -34,14 +36,17 @@ def run():
             print(f"לא נמצא מחיר עבור {origin} -> {destination}")
             continue
 
-        save_price(route_id, current_price)
 
         last_price = get_last_price(route_id)
+        save_price(route_id, current_price)
 
         price_dropped = last_price and current_price < last_price
-        below_target = target_price and current_price <= target_price
+        
 
-        if price_dropped or below_target:
+        if price_dropped:
+            send_alert(origin, destination, current_price, last_price)
+            save_alert(route_id, current_price)
+        elif not last_price and target_price and current_price <= target_price:
             send_alert(origin, destination, current_price, last_price)
             save_alert(route_id, current_price)
 
