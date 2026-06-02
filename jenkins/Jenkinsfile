@@ -1,11 +1,10 @@
-
 pipeline {
     agent any
 
     stages {
         stage('Tests') {
             steps {
-                sh 'docker run --rm -v $(pwd):/app -w /app python:3.11-slim pip install -r requirements.txt --break-system-packages -q && python -m pytest tests/ -v'
+                sh 'docker compose run --rm scraper python -m pytest tests/ -v'
             }
         }
 
