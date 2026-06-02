@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Tests') {
             steps {
-                sh 'docker compose run --rm scraper python -m pytest tests/ -v'
+                sh 'docker compose run scraper python -m pytest tests/ -v'
             }
         }
 
