@@ -54,3 +54,25 @@ def save_alert(route_id, price):
     conn.commit()
     cursor.close()
     conn.close()
+
+
+def alert_already_sent(route_id, price):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute(
+            """
+            SELECT 1 
+            FROM alerts_sent
+            WHERE route_id = %s
+            AND price = %s
+            LIMIT 1 
+            """,
+            (route_id, price)
+    )
+    result = cursor.fetchone()
+
+    cursor.close()
+    conn.close()
+
+    return result is not None 
